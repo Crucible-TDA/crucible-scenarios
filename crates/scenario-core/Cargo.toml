@@ -1,0 +1,12 @@
+[package]
+name = "scenario-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "scenario-core: the domain model for crucible-scenarios — scenario definitions, actors, environments, operations, expectations, observations, assertions, outcomes, and failure classification"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

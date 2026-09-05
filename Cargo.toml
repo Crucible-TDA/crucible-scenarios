@@ -9,7 +9,7 @@
 resolver = "2"
 members = [
     # Crates are added here as they are introduced, one per improvement.
-    # "crates/scenario-core",
+    "crates/scenario-core",
     # "crates/scenario-runner",
     # "crates/scenario-registry",
     # "crates/fixtures",
