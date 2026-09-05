@@ -1,0 +1,20 @@
+# Rust build output
+/target
+**/*.rs.bk
+
+# Editor/OS noise
+*.swp
+.DS_Store
+
+# Secrets and local configuration — never commit real keys or seeds
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Fuzzing and coverage artifacts
+/fuzz/target
+*.profraw
+*.lcov
+test-results/

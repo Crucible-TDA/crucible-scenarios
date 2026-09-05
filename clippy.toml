@@ -1,0 +1,2 @@
+# Minimum supported Rust version for lint guidance.
+msrv = "1.81"

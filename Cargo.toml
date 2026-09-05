@@ -1,0 +1,51 @@
+# crucible-scenarios — STRESS-TEST polyrepo of the Crucible hybrid system.
+#
+# This repository is an orchestration and validation layer only. It consumes
+# stable interfaces from crucible-simulator (SIMULATE) and crucible-prover
+# (PROVE); it never re-implements simulation, proving, token accounting, or
+# cryptographic primitives. See README.md and docs/architecture.md.
+
+[workspace]
+resolver = "2"
+members = [
+    # Crates are added here as they are introduced, one per improvement.
+    # "crates/scenario-core",
+    # "crates/scenario-runner",
+    # "crates/scenario-registry",
+    # "crates/fixtures",
+    # "crates/assertions",
+    # "crates/adapters/simulator",
+    # "crates/adapters/prover",
+    # "crates/adapters/soroban",
+    # "crates/adapters/testnet",
+    # "crates/flows",
+    # "crates/negative",
+    # "crates/adversarial",
+    # "crates/conformance",
+    # "crates/invariants",
+    # "crates/regression",
+    # "crates/fuzz",
+    # "crates/reporting",
+    # "cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.81"
+license = "Apache-2.0"
+description = "crucible-scenarios: scenario orchestration, conformance, adversarial, invariant, privacy, regression, and stress-testing layer for the Crucible Confidential Token stack"
+repository = "https://github.com/Crucible-TDA/crucible-scenarios"
+readme = "README.md"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+lto = "thin"
