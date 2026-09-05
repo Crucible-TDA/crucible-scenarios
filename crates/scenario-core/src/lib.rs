@@ -34,5 +34,7 @@
 //! compiles.
 
 pub mod errors;
+pub mod seed;
 
 pub use errors::{Error, Result};
+pub use seed::{DeterministicRng, Seed};
