@@ -33,6 +33,7 @@
 //! Modules are attached one improvement at a time so the crate always
 //! compiles.
 
+pub mod actors;
 pub mod errors;
 pub mod metadata;
 pub mod scenario_id;
@@ -40,6 +41,7 @@ pub mod seed;
 pub mod severity;
 pub mod tags;
 
+pub use actors::{Actor, ActorId, ActorSet, Role};
 pub use errors::{Error, Result};
 pub use metadata::{Category, ScenarioMetadata};
 pub use scenario_id::ScenarioId;
