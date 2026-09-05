@@ -34,6 +34,7 @@
 //! compiles.
 
 pub mod actors;
+pub mod assertion;
 pub mod capabilities;
 pub mod environment;
 pub mod errors;
@@ -47,6 +48,7 @@ pub mod severity;
 pub mod tags;
 
 pub use actors::{Actor, ActorId, ActorSet, Role};
+pub use assertion::{AssertionKind, AssertionResult, AssertionSpec};
 pub use capabilities::{Capabilities, Capability};
 pub use environment::{Environment, EnvironmentKind};
 pub use errors::{Error, Result};
