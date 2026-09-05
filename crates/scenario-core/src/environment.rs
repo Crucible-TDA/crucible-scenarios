@@ -160,7 +160,10 @@ mod tests {
         ] {
             assert_eq!(kind.to_string().parse::<EnvironmentKind>().unwrap(), kind);
         }
-        assert_eq!("end_to_end".parse::<EnvironmentKind>().unwrap(), EnvironmentKind::EndToEnd);
+        assert_eq!(
+            "end_to_end".parse::<EnvironmentKind>().unwrap(),
+            EnvironmentKind::EndToEnd
+        );
         assert!("mainnet".parse::<EnvironmentKind>().is_err());
     }
 

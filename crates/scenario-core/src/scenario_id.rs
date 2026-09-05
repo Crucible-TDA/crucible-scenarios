@@ -43,14 +43,19 @@ impl ScenarioId {
                 continue;
             }
             if b == b'-' {
-                let prev_ok = i > 0 && (bytes[i - 1].is_ascii_uppercase() || bytes[i - 1].is_ascii_digit());
-                let next_ok = i + 1 < bytes.len() && (bytes[i + 1].is_ascii_uppercase() || bytes[i + 1].is_ascii_digit());
+                let prev_ok =
+                    i > 0 && (bytes[i - 1].is_ascii_uppercase() || bytes[i - 1].is_ascii_digit());
+                let next_ok = i + 1 < bytes.len()
+                    && (bytes[i + 1].is_ascii_uppercase() || bytes[i + 1].is_ascii_digit());
                 if !(prev_ok && next_ok) {
                     return Err("`-` must separate two alphanumeric runs".to_string());
                 }
                 continue;
             }
-            return Err(format!("character `{}` not allowed (uppercase A-Z, 0-9, `-`)", raw[i..].chars().next().unwrap_or('?')));
+            return Err(format!(
+                "character `{}` not allowed (uppercase A-Z, 0-9, `-`)",
+                raw[i..].chars().next().unwrap_or('?')
+            ));
         }
         Ok(())
     }
@@ -130,7 +135,15 @@ mod tests {
     #[test]
     fn rejects_malformed_identifiers() {
         for id in [
-            "", " ", "ct-xfer-001", "CT xfer", "CT_", "-CT-1", "CT--1", "CT-", "CT/XFER",
+            "",
+            " ",
+            "ct-xfer-001",
+            "CT xfer",
+            "CT_",
+            "-CT-1",
+            "CT--1",
+            "CT-",
+            "CT/XFER",
             &"C".repeat(ScenarioId::MAX_LEN + 1),
         ] {
             assert!(!ScenarioId::is_valid(id), "{id:?} should be invalid");

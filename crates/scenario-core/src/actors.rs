@@ -41,8 +41,10 @@ impl ActorId {
                 continue;
             }
             if b == b'-' {
-                let prev_ok = i > 0 && (bytes[i - 1].is_ascii_lowercase() || bytes[i - 1].is_ascii_digit());
-                let next_ok = i + 1 < bytes.len() && (bytes[i + 1].is_ascii_lowercase() || bytes[i + 1].is_ascii_digit());
+                let prev_ok =
+                    i > 0 && (bytes[i - 1].is_ascii_lowercase() || bytes[i - 1].is_ascii_digit());
+                let next_ok = i + 1 < bytes.len()
+                    && (bytes[i + 1].is_ascii_lowercase() || bytes[i + 1].is_ascii_digit());
                 if !(prev_ok && next_ok) {
                     return Err("`-` must separate two alphanumeric runs".to_string());
                 }
@@ -83,7 +85,9 @@ impl std::str::FromStr for ActorId {
 }
 
 impl<'de> Deserialize<'de> for ActorId {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> std::result::Result<Self, D::Error> {
+    fn deserialize<D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> std::result::Result<Self, D::Error> {
         let raw = String::deserialize(deserializer)?;
         ActorId::new(&raw).map_err(serde::de::Error::custom)
     }
@@ -215,7 +219,9 @@ impl ActorSet {
 
     /// Look up an actor, returning [`Error::UnknownActor`] when absent.
     pub fn require(&self, id: &ActorId) -> Result<&Actor> {
-        self.0.get(id).ok_or_else(|| Error::UnknownActor(id.to_string()))
+        self.0
+            .get(id)
+            .ok_or_else(|| Error::UnknownActor(id.to_string()))
     }
 
     /// Iterate actors in deterministic (sorted-id) order.
@@ -236,7 +242,11 @@ impl ActorSet {
 
 impl std::fmt::Display for ActorSet {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let names = self.iter().map(|a| a.id.to_string()).collect::<Vec<_>>().join(", ");
+        let names = self
+            .iter()
+            .map(|a| a.id.to_string())
+            .collect::<Vec<_>>()
+            .join(", ");
         f.write_str(&names)
     }
 }
@@ -250,7 +260,9 @@ mod tests {
         for id in ["alice", "bob", "issuer", "carol-2", "unauthorized-user"] {
             assert!(ActorId::new(id).is_ok());
         }
-        for id in ["", "Alice", "al ice", "alice_1", "-alice", "alice-", "--", "a--b"] {
+        for id in [
+            "", "Alice", "al ice", "alice_1", "-alice", "alice-", "--", "a--b",
+        ] {
             assert!(ActorId::new(id).is_err());
         }
     }
@@ -267,8 +279,14 @@ mod tests {
         ] {
             assert_eq!(role.to_string().parse::<Role>().unwrap(), role);
         }
-        assert_eq!("unauthorized-user".parse::<Role>().unwrap(), Role::Unauthorized);
-        assert_eq!(serde_json::to_string(&Role::Auditor).unwrap(), "\"auditor\"");
+        assert_eq!(
+            "unauthorized-user".parse::<Role>().unwrap(),
+            Role::Unauthorized
+        );
+        assert_eq!(
+            serde_json::to_string(&Role::Auditor).unwrap(),
+            "\"auditor\""
+        );
     }
 
     #[test]
@@ -283,21 +301,32 @@ mod tests {
     #[test]
     fn actor_set_detects_duplicates() {
         let mut set = ActorSet::new();
-        set.register(Actor::new(ActorId::new("alice").unwrap(), Role::User)).unwrap();
-        assert!(set.register(Actor::new(ActorId::new("alice").unwrap(), Role::Admin)).is_err());
+        set.register(Actor::new(ActorId::new("alice").unwrap(), Role::User))
+            .unwrap();
+        assert!(set
+            .register(Actor::new(ActorId::new("alice").unwrap(), Role::Admin))
+            .is_err());
         assert_eq!(set.len(), 1);
     }
 
     #[test]
     fn actor_set_require_and_iterate_deterministically() {
         let mut set = ActorSet::new();
-        set.register(Actor::new(ActorId::new("bob").unwrap(), Role::User)).unwrap();
-        set.register(Actor::new(ActorId::new("alice").unwrap(), Role::User)).unwrap();
+        set.register(Actor::new(ActorId::new("bob").unwrap(), Role::User))
+            .unwrap();
+        set.register(Actor::new(ActorId::new("alice").unwrap(), Role::User))
+            .unwrap();
         let names: Vec<_> = set.iter().map(|a| a.id.to_string()).collect();
         assert_eq!(names, vec!["alice", "bob"]);
         let missing = ActorId::new("carol").unwrap();
         assert!(set.require(&missing).is_err());
-        assert_eq!(set.require(&ActorId::new("bob").unwrap()).unwrap().id.to_string(), "bob");
+        assert_eq!(
+            set.require(&ActorId::new("bob").unwrap())
+                .unwrap()
+                .id
+                .to_string(),
+            "bob"
+        );
     }
 
     #[test]

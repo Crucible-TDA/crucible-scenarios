@@ -9,7 +9,9 @@
 use serde::{Deserialize, Serialize};
 
 /// How seriously a finding should be taken.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize,
+)]
 #[serde(rename_all = "lowercase")]
 pub enum Severity {
     /// Informational — no defect, or expected behavior observed.
@@ -118,7 +120,10 @@ mod tests {
 
     #[test]
     fn serde_uses_lowercase_names() {
-        assert_eq!(serde_json::to_string(&Severity::Critical).unwrap(), "\"critical\"");
+        assert_eq!(
+            serde_json::to_string(&Severity::Critical).unwrap(),
+            "\"critical\""
+        );
         assert_eq!(
             serde_json::from_str::<Severity>("\"high\"").unwrap(),
             Severity::High

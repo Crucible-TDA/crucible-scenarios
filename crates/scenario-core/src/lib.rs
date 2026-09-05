@@ -55,7 +55,7 @@ pub use actors::{Actor, ActorId, ActorSet, Role};
 pub use assertion::{AssertionKind, AssertionResult, AssertionSpec};
 pub use capabilities::{Capabilities, Capability};
 pub use context::{
-    Clock, EventLog, ExecutionReport, FixtureProvider, FixedClock, ProofProviderService,
+    Clock, EventLog, ExecutionReport, FixedClock, FixtureProvider, ProofProviderService,
     ProofReport, ProofRequest, ScenarioContext, SimulatorService, SorobanService, SystemClock,
     VerificationReport, VerificationRequest, VerifierService,
 };
@@ -65,8 +65,8 @@ pub use expectation::{Expectation, ExpectationKind};
 pub use failure::{Failure, FailureCategory, LifecycleStage};
 pub use metadata::{Category, ScenarioMetadata};
 pub use observation::{Observation, ObservationLog, ObservationValue, Visibility, REDACTED_MARKER};
-pub use outcome::{ScenarioOutcome, Status};
 pub use operation::{Amount, ConfidentialAmount, Operation, OperationId, OperationKind, TokenId};
+pub use outcome::{ScenarioOutcome, Status};
 pub use scenario::{DeclaredOutcome, Scenario, ScenarioBuilder};
 pub use scenario_id::ScenarioId;
 pub use seed::{DeterministicRng, Seed};

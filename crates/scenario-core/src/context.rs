@@ -201,7 +201,10 @@ impl EventLog {
 
     /// Public event codes in emission order.
     pub fn codes(&self) -> Vec<String> {
-        self.inner.lock().map(|inner| inner.clone()).unwrap_or_default()
+        self.inner
+            .lock()
+            .map(|inner| inner.clone())
+            .unwrap_or_default()
     }
 
     /// Whether any event with the code was recorded.
@@ -286,7 +289,9 @@ impl ScenarioContext {
 
     /// The environment this context drives.
     pub fn environment(&self) -> &Environment {
-        self.environment.as_ref().expect("context always has an environment")
+        self.environment
+            .as_ref()
+            .expect("context always has an environment")
     }
 
     /// The deterministic seed, when the scenario declared one.
@@ -383,9 +388,9 @@ impl ScenarioContext {
 
     /// Soroban access.
     pub fn soroban(&self) -> Result<&dyn SorobanService> {
-        self.soroban.as_deref().ok_or_else(|| {
-            Error::UnavailableCapability(Capability::SorobanAdapter.as_str().into())
-        })
+        self.soroban
+            .as_deref()
+            .ok_or_else(|| Error::UnavailableCapability(Capability::SorobanAdapter.as_str().into()))
     }
 
     /// Fixture access.
@@ -478,11 +483,8 @@ mod tests {
 
     #[test]
     fn context_starts_with_environment_implied_capabilities() {
-        let context = ScenarioContext::for_scenario(
-            metadata(),
-            Environment::simulator(),
-            Some(Seed::new(1)),
-        );
+        let context =
+            ScenarioContext::for_scenario(metadata(), Environment::simulator(), Some(Seed::new(1)));
         assert!(context.offered_capabilities().has(Capability::Simulation));
         assert!(!context.offered_capabilities().has(Capability::Testnet));
         let required = Capabilities::of([Capability::Simulation]);
@@ -495,21 +497,23 @@ mod tests {
     fn services_offer_their_capabilities() {
         let events = EventLog::new();
         let events_ref = std::sync::Arc::new(events);
-        let context = ScenarioContext::for_scenario(
-            metadata(),
-            Environment::simulator(),
-            Some(Seed::new(1)),
-        )
-        .with_simulator(RecordingSimulator {
-            events: std::sync::Arc::clone(&events_ref),
-        })
-        .with_prover(AlwaysOkProver)
-        .with_verifier(AlwaysTrueVerifier);
-        assert!(context.offered_capabilities().has(Capability::ProofProvider));
+        let context =
+            ScenarioContext::for_scenario(metadata(), Environment::simulator(), Some(Seed::new(1)))
+                .with_simulator(RecordingSimulator {
+                    events: std::sync::Arc::clone(&events_ref),
+                })
+                .with_prover(AlwaysOkProver)
+                .with_verifier(AlwaysTrueVerifier);
+        assert!(context
+            .offered_capabilities()
+            .has(Capability::ProofProvider));
         assert!(context.offered_capabilities().has(Capability::Verifier));
         assert!(context.prover().is_ok());
         assert!(context.soroban().is_err());
-        assert_eq!(context.service_names(), vec!["simulator", "prover", "verifier"]);
+        assert_eq!(
+            context.service_names(),
+            vec!["simulator", "prover", "verifier"]
+        );
     }
 
     struct AlwaysOkProver;
@@ -550,12 +554,18 @@ mod tests {
 
     #[test]
     fn sub_seeds_are_stable_per_label() {
-        let a = ScenarioContext::for_scenario(metadata(), Environment::simulator(), Some(Seed::new(9)));
-        let b = ScenarioContext::for_scenario(metadata(), Environment::simulator(), Some(Seed::new(9)));
+        let a =
+            ScenarioContext::for_scenario(metadata(), Environment::simulator(), Some(Seed::new(9)));
+        let b =
+            ScenarioContext::for_scenario(metadata(), Environment::simulator(), Some(Seed::new(9)));
         assert_eq!(a.seed_for("balances"), b.seed_for("balances"));
         assert_ne!(a.seed_for("balances"), a.seed_for("proofs"));
         // Different parent seeds give different sub-streams for the same label.
-        let c = ScenarioContext::for_scenario(metadata(), Environment::simulator(), Some(Seed::new(10)));
+        let c = ScenarioContext::for_scenario(
+            metadata(),
+            Environment::simulator(),
+            Some(Seed::new(10)),
+        );
         assert_ne!(a.seed_for("balances"), c.seed_for("balances"));
     }
 

@@ -68,7 +68,11 @@ pub enum ExpectationKind {
 
 impl Expectation {
     /// Build an expectation.
-    pub fn new(id: impl Into<String>, description: impl Into<String>, kind: ExpectationKind) -> Self {
+    pub fn new(
+        id: impl Into<String>,
+        description: impl Into<String>,
+        kind: ExpectationKind,
+    ) -> Self {
         Expectation {
             id: id.into(),
             description: description.into(),
@@ -77,8 +81,16 @@ impl Expectation {
     }
 
     /// Convenience: the named operation succeeds.
-    pub fn succeeds(id: impl Into<String>, description: impl Into<String>, operation: OperationId) -> Self {
-        Self::new(id, description, ExpectationKind::OperationSucceeds { operation })
+    pub fn succeeds(
+        id: impl Into<String>,
+        description: impl Into<String>,
+        operation: OperationId,
+    ) -> Self {
+        Self::new(
+            id,
+            description,
+            ExpectationKind::OperationSucceeds { operation },
+        )
     }
 
     /// Convenience: the named operation is rejected, optionally with a reason.
@@ -126,18 +138,33 @@ mod tests {
     fn expectation_kinds_round_trip_through_json() {
         let expectations = vec![
             Expectation::succeeds("e1", "deposit succeeds", op("op-1")),
-            Expectation::rejected("e2", "insufficient balance rejected", op("op-2"), Some("insufficient-balance")),
+            Expectation::rejected(
+                "e2",
+                "insufficient balance rejected",
+                op("op-2"),
+                Some("insufficient-balance"),
+            ),
             Expectation::new(
                 "e3",
                 "transfer amount stays private",
-                ExpectationKind::NotDisclosed { observation: "op-3.transfer.amount".to_string() },
+                ExpectationKind::NotDisclosed {
+                    observation: "op-3.transfer.amount".to_string(),
+                },
             ),
             Expectation::new(
                 "e4",
                 "conservation holds",
-                ExpectationKind::InvariantHolds { invariant: "conservation".to_string() },
+                ExpectationKind::InvariantHolds {
+                    invariant: "conservation".to_string(),
+                },
             ),
-            Expectation::new("e5", "no replay", ExpectationKind::ReplayRejected { operation: op("op-4") }),
+            Expectation::new(
+                "e5",
+                "no replay",
+                ExpectationKind::ReplayRejected {
+                    operation: op("op-4"),
+                },
+            ),
         ];
         for e in &expectations {
             let json = serde_json::to_string(e).unwrap();
@@ -158,13 +185,21 @@ mod tests {
 
     #[test]
     fn invariant_and_privacy_expectations_reference_no_operation() {
-        let invariant = Expectation::new("e", "invariant", ExpectationKind::InvariantHolds {
-            invariant: "ownership".to_string(),
-        });
+        let invariant = Expectation::new(
+            "e",
+            "invariant",
+            ExpectationKind::InvariantHolds {
+                invariant: "ownership".to_string(),
+            },
+        );
         assert!(invariant.referenced_operation().is_none());
-        let privacy = Expectation::new("e", "privacy", ExpectationKind::NotDisclosed {
-            observation: "balance".to_string(),
-        });
+        let privacy = Expectation::new(
+            "e",
+            "privacy",
+            ExpectationKind::NotDisclosed {
+                observation: "balance".to_string(),
+            },
+        );
         assert!(privacy.referenced_operation().is_none());
     }
 }

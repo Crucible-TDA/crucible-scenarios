@@ -105,17 +105,20 @@ mod tests {
 
     #[test]
     fn error_code_is_stable_and_machine_readable() {
-        assert_eq!(Error::InvalidId("x".into(), "why".into()).code(), "INVALID_ID");
-        assert_eq!(Error::DuplicateId("x".into()).code(), "DUPLICATE_ID");
         assert_eq!(
-            Error::Internal("boom".into()).code(),
-            "INTERNAL"
+            Error::InvalidId("x".into(), "why".into()).code(),
+            "INVALID_ID"
         );
+        assert_eq!(Error::DuplicateId("x".into()).code(), "DUPLICATE_ID");
+        assert_eq!(Error::Internal("boom".into()).code(), "INTERNAL");
     }
 
     #[test]
     fn error_displays_human_readable_message() {
         let e = Error::InvalidId("ct-xfer".into(), "must be uppercase".into());
-        assert_eq!(e.to_string(), "invalid identifier `ct-xfer`: must be uppercase");
+        assert_eq!(
+            e.to_string(),
+            "invalid identifier `ct-xfer`: must be uppercase"
+        );
     }
 }

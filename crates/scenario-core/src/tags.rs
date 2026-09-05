@@ -177,7 +177,9 @@ impl<'de> Deserialize<'de> for Tags {
     /// Deserialize from a sequence of strings, canonicalizing each tag the
     /// same way [`Tags::insert`] does (lowercase, trimmed) so that tags read
     /// back from disk compare equal regardless of source casing.
-    fn deserialize<D: ::serde::Deserializer<'de>>(deserializer: D) -> ::std::result::Result<Self, D::Error> {
+    fn deserialize<D: ::serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> ::std::result::Result<Self, D::Error> {
         let raw = <Vec<String>>::deserialize(deserializer)?;
         Ok(Tags::of(raw))
     }
@@ -239,7 +241,10 @@ mod tests {
     #[test]
     fn serde_is_a_sorted_array() {
         let tags = Tags::of(["transfer", "adversarial"]);
-        assert_eq!(serde_json::to_string(&tags).unwrap(), r#"["adversarial","transfer"]"#);
+        assert_eq!(
+            serde_json::to_string(&tags).unwrap(),
+            r#"["adversarial","transfer"]"#
+        );
         let back: Tags = serde_json::from_str(r#"["PRIVACY","proof"]"#).unwrap();
         assert_eq!(back.iter().collect::<Vec<_>>(), vec!["privacy", "proof"]);
     }

@@ -152,13 +152,27 @@ impl AssertionSpec {
     }
 
     /// Convenience: an event was emitted.
-    pub fn event(id: impl Into<String>, description: impl Into<String>, code: impl Into<String>) -> Self {
+    pub fn event(
+        id: impl Into<String>,
+        description: impl Into<String>,
+        code: impl Into<String>,
+    ) -> Self {
         Self::new(id, description, AssertionKind::Event { code: code.into() })
     }
 
     /// Convenience: a private field must never be visible.
-    pub fn private_not_visible(id: impl Into<String>, description: impl Into<String>, field: impl Into<String>) -> Self {
-        Self::new(id, description, AssertionKind::PrivateNotVisible { field: field.into() })
+    pub fn private_not_visible(
+        id: impl Into<String>,
+        description: impl Into<String>,
+        field: impl Into<String>,
+    ) -> Self {
+        Self::new(
+            id,
+            description,
+            AssertionKind::PrivateNotVisible {
+                field: field.into(),
+            },
+        )
     }
 }
 
@@ -219,11 +233,15 @@ mod tests {
             AssertionSpec::failure("a2", "op-2 rejected as expected"),
             AssertionSpec::event("a3", "transfer event emitted", "ct_xfer"),
             AssertionSpec::private_not_visible("a4", "amount stays private", "op-1.amount"),
-            AssertionSpec::new("a5", "balances hold", AssertionKind::Balance {
-                actor: "alice".to_string(),
-                token: "ct-usdc".to_string(),
-                expected: 70,
-            }),
+            AssertionSpec::new(
+                "a5",
+                "balances hold",
+                AssertionKind::Balance {
+                    actor: "alice".to_string(),
+                    token: "ct-usdc".to_string(),
+                    expected: 70,
+                },
+            ),
             AssertionSpec::new("a6", "no replay", AssertionKind::ReplayRejected),
         ];
         for a in &assertions {

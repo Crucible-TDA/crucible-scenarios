@@ -175,7 +175,11 @@ impl ScenarioOutcome {
     }
 
     /// Append an observation.
-    pub fn observe(&mut self, key: impl Into<String>, value: impl Into<crate::observation::ObservationValue>) {
+    pub fn observe(
+        &mut self,
+        key: impl Into<String>,
+        value: impl Into<crate::observation::ObservationValue>,
+    ) {
         self.observations
             .push(crate::observation::Observation::public(key, value));
     }
@@ -239,7 +243,10 @@ mod tests {
         ] {
             assert_eq!(status.as_str(), name);
             assert_eq!(status.to_string().parse::<Status>().unwrap(), status);
-            assert_eq!(serde_json::to_string(&status).unwrap(), format!("\"{name}\""));
+            assert_eq!(
+                serde_json::to_string(&status).unwrap(),
+                format!("\"{name}\"")
+            );
         }
         assert!(Status::Pass.is_pass());
         assert!(Status::ExpectedFailure.is_pass());
@@ -263,7 +270,8 @@ mod tests {
     #[test]
     fn outcome_attaches_failure_and_flips_pass() {
         let id = ScenarioId::new("CT-XFER-001").unwrap();
-        let mut outcome = ScenarioOutcome::started(id, 0).with_environment(Environment::simulator());
+        let mut outcome =
+            ScenarioOutcome::started(id, 0).with_environment(Environment::simulator());
         outcome.op_executed();
         outcome.push_assertion(AssertionResult::failed(
             "a1",
@@ -284,13 +292,17 @@ mod tests {
     #[test]
     fn outcome_serializes_without_leaking_private_values() {
         let id = ScenarioId::new("CT-PRIV-001").unwrap();
-        let mut outcome = ScenarioOutcome::started(id, 0).with_environment(Environment::simulator());
+        let mut outcome =
+            ScenarioOutcome::started(id, 0).with_environment(Environment::simulator());
         outcome.push_observation(crate::observation::Observation::private(
             "op-1.amount",
             55_000,
         ));
         let json = serde_json::to_string(&outcome).unwrap();
-        assert!(!json.contains("55000"), "private amount leaked into outcome JSON");
+        assert!(
+            !json.contains("55000"),
+            "private amount leaked into outcome JSON"
+        );
         assert!(json.contains("[REDACTED]"));
     }
 }

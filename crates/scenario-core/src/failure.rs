@@ -84,8 +84,12 @@ impl FailureCategory {
     pub const fn default_severity(self) -> Severity {
         match self {
             // Security-relevant categories must surface loudly.
-            FailureCategory::UnexpectedAcceptance | FailureCategory::PrivacyFailure => Severity::Critical,
-            FailureCategory::AuthorizationFailure | FailureCategory::VerificationFailure => Severity::High,
+            FailureCategory::UnexpectedAcceptance | FailureCategory::PrivacyFailure => {
+                Severity::Critical
+            }
+            FailureCategory::AuthorizationFailure | FailureCategory::VerificationFailure => {
+                Severity::High
+            }
             // Integrity and behavior defects.
             FailureCategory::InvariantFailure
             | FailureCategory::AssertionFailure
@@ -267,18 +271,34 @@ mod tests {
             FailureCategory::Timeout,
             FailureCategory::UnknownFailure,
         ] {
-            assert_eq!(serde_json::to_string(&c).unwrap(), format!("\"{}\"", c.as_str()));
+            assert_eq!(
+                serde_json::to_string(&c).unwrap(),
+                format!("\"{}\"", c.as_str())
+            );
         }
-        assert_eq!(FailureCategory::as_str(FailureCategory::UnexpectedAcceptance), "UNEXPECTED_ACCEPTANCE");
+        assert_eq!(
+            FailureCategory::as_str(FailureCategory::UnexpectedAcceptance),
+            "UNEXPECTED_ACCEPTANCE"
+        );
     }
 
     #[test]
     fn security_sensitive_categories_get_elevated_defaults() {
-        assert!(FailureCategory::UnexpectedAcceptance.default_severity().is_elevated());
-        assert!(FailureCategory::PrivacyFailure.default_severity().is_elevated());
-        assert!(FailureCategory::AuthorizationFailure.default_severity().is_elevated());
-        assert!(FailureCategory::VerificationFailure.default_severity().is_elevated());
-        assert!(!FailureCategory::Cancellation.default_severity().is_elevated());
+        assert!(FailureCategory::UnexpectedAcceptance
+            .default_severity()
+            .is_elevated());
+        assert!(FailureCategory::PrivacyFailure
+            .default_severity()
+            .is_elevated());
+        assert!(FailureCategory::AuthorizationFailure
+            .default_severity()
+            .is_elevated());
+        assert!(FailureCategory::VerificationFailure
+            .default_severity()
+            .is_elevated());
+        assert!(!FailureCategory::Cancellation
+            .default_severity()
+            .is_elevated());
         assert!(FailureCategory::UnexpectedAcceptance.is_security_sensitive());
         assert!(FailureCategory::PrivacyFailure.is_security_sensitive());
         assert!(!FailureCategory::Timeout.is_security_sensitive());
@@ -303,8 +323,12 @@ mod tests {
 
     #[test]
     fn failure_serde_round_trip() {
-        let f = Failure::new(FailureCategory::StateFailure, LifecycleStage::Assert, "diverged")
-            .with_operation("op-1");
+        let f = Failure::new(
+            FailureCategory::StateFailure,
+            LifecycleStage::Assert,
+            "diverged",
+        )
+        .with_operation("op-1");
         let json = serde_json::to_string(&f).unwrap();
         assert!(json.contains("\"category\":\"STATE_FAILURE\""));
         let back: Failure = serde_json::from_str(&json).unwrap();

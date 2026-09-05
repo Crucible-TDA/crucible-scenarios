@@ -218,7 +218,10 @@ impl Observation {
 }
 
 impl Serialize for Observation {
-    fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
         // Structural redaction: private/sensitive/internal values are never
         // emitted, only a marker. This is enforced here, at the type, so no
@@ -272,7 +275,9 @@ impl ObservationLog {
     /// Whether every observation is public (used by reporting to decide what
     /// may be written verbatim).
     pub fn all_public(&self) -> bool {
-        self.observations.iter().all(|o| o.classification.is_public())
+        self.observations
+            .iter()
+            .all(|o| o.classification.is_public())
     }
 }
 
@@ -310,7 +315,11 @@ mod tests {
     #[test]
     fn classification_flags_are_exact() {
         assert!(Visibility::Public.is_public());
-        for v in [Visibility::Private, Visibility::Sensitive, Visibility::Internal] {
+        for v in [
+            Visibility::Private,
+            Visibility::Sensitive,
+            Visibility::Internal,
+        ] {
             assert!(!v.is_public());
         }
     }

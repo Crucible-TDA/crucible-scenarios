@@ -153,7 +153,9 @@ impl ScenarioMetadata {
             return Err(Error::InvalidMetadata("name must not be empty".into()));
         }
         if description.trim().is_empty() {
-            return Err(Error::InvalidMetadata("description must not be empty".into()));
+            return Err(Error::InvalidMetadata(
+                "description must not be empty".into(),
+            ));
         }
         Ok(ScenarioMetadata {
             id,
@@ -215,7 +217,10 @@ mod tests {
     fn category_names_round_trip() {
         for c in Category::ALL {
             assert_eq!(Category::from_str(c.as_str()).unwrap(), c);
-            assert_eq!(Category::from_str(&c.as_str().to_uppercase().replace('-', "_")).unwrap(), c);
+            assert_eq!(
+                Category::from_str(&c.as_str().to_uppercase().replace('-', "_")).unwrap(),
+                c
+            );
         }
         assert!(Category::from_str("nope").is_err());
     }

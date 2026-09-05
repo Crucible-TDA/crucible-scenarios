@@ -37,7 +37,12 @@ impl TokenId {
     pub fn new(raw: &str) -> Result<Self> {
         ActorId::new(raw)
             .map(|_| TokenId(raw.to_string()))
-            .map_err(|_| Error::InvalidId(format!("token `{raw}`"), "expected lowercase a-z, 0-9, `-`".to_string()))
+            .map_err(|_| {
+                Error::InvalidId(
+                    format!("token `{raw}`"),
+                    "expected lowercase a-z, 0-9, `-`".to_string(),
+                )
+            })
     }
 
     /// The identifier as a string slice.
@@ -61,13 +66,18 @@ impl std::str::FromStr for TokenId {
 }
 
 impl Serialize for TokenId {
-    fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
         serializer.serialize_str(&self.0)
     }
 }
 
 impl<'de> Deserialize<'de> for TokenId {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> std::result::Result<Self, D::Error> {
+    fn deserialize<D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> std::result::Result<Self, D::Error> {
         let raw = String::deserialize(deserializer)?;
         TokenId::new(&raw).map_err(serde::de::Error::custom)
     }
@@ -82,7 +92,12 @@ impl OperationId {
     pub fn new(raw: &str) -> Result<Self> {
         ActorId::new(raw)
             .map(|_| OperationId(raw.to_string()))
-            .map_err(|_| Error::InvalidId(format!("operation `{raw}`"), "expected lowercase a-z, 0-9, `-`".to_string()))
+            .map_err(|_| {
+                Error::InvalidId(
+                    format!("operation `{raw}`"),
+                    "expected lowercase a-z, 0-9, `-`".to_string(),
+                )
+            })
     }
 
     /// The identifier as a string slice.
@@ -106,13 +121,18 @@ impl std::str::FromStr for OperationId {
 }
 
 impl Serialize for OperationId {
-    fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
         serializer.serialize_str(&self.0)
     }
 }
 
 impl<'de> Deserialize<'de> for OperationId {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> std::result::Result<Self, D::Error> {
+    fn deserialize<D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> std::result::Result<Self, D::Error> {
         let raw = String::deserialize(deserializer)?;
         OperationId::new(&raw).map_err(serde::de::Error::custom)
     }

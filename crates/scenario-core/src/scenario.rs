@@ -15,7 +15,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::actors::{Actor, ActorSet, ActorId};
+use crate::actors::{Actor, ActorId, ActorSet};
 use crate::assertion::AssertionSpec;
 use crate::capabilities::{Capabilities, Capability};
 use crate::environment::Environment;
@@ -249,10 +249,7 @@ impl ScenarioBuilder {
 
         // Invariant keys must be non-empty when declared.
         if self.invariant_ids.iter().any(|k| k.trim().is_empty()) {
-            return Err(Error::UnknownReference(
-                "invariant",
-                "<empty>".into(),
-            ));
+            return Err(Error::UnknownReference("invariant", "<empty>".into()));
         }
 
         Ok(Scenario {
@@ -290,8 +287,10 @@ mod tests {
 
     fn actors() -> ActorSet {
         let mut set = ActorSet::new();
-        set.register(Actor::new(ActorId::new("alice").unwrap(), Role::User)).unwrap();
-        set.register(Actor::new(ActorId::new("bob").unwrap(), Role::User)).unwrap();
+        set.register(Actor::new(ActorId::new("alice").unwrap(), Role::User))
+            .unwrap();
+        set.register(Actor::new(ActorId::new("bob").unwrap(), Role::User))
+            .unwrap();
         set
     }
 
@@ -353,21 +352,19 @@ mod tests {
                 account: ActorId::new("alice").unwrap(),
             },
         );
-        let scenario = base_builder()
-            .add_operation(op)
-            .build();
+        let scenario = base_builder().add_operation(op).build();
         assert!(matches!(scenario, Err(Error::DuplicateId(_))));
     }
 
     #[test]
     fn dangling_expectation_references_are_rejected() {
-        let expectation = Expectation::succeeds(
-            "e1",
-            "ghost operation",
-            OperationId::new("op-99").unwrap(),
-        );
+        let expectation =
+            Expectation::succeeds("e1", "ghost operation", OperationId::new("op-99").unwrap());
         let scenario = base_builder().add_expectation(expectation).build();
-        assert!(matches!(scenario, Err(Error::UnknownReference("expectation", _))));
+        assert!(matches!(
+            scenario,
+            Err(Error::UnknownReference("expectation", _))
+        ));
     }
 
     #[test]
@@ -381,7 +378,9 @@ mod tests {
     #[test]
     fn declared_failure_semantics_round_trip() {
         let scenario = base_builder()
-            .declared_outcome(DeclaredOutcome::Fails(FailureCategory::AuthorizationFailure))
+            .declared_outcome(DeclaredOutcome::Fails(
+                FailureCategory::AuthorizationFailure,
+            ))
             .build()
             .unwrap();
         assert_eq!(

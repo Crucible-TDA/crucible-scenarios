@@ -98,13 +98,18 @@ impl std::str::FromStr for Capability {
 }
 
 impl Serialize for Capability {
-    fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
         serializer.serialize_str(self.as_str())
     }
 }
 
 impl<'de> Deserialize<'de> for Capability {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> std::result::Result<Self, D::Error> {
+    fn deserialize<D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> std::result::Result<Self, D::Error> {
         let raw = String::deserialize(deserializer)?;
         raw.parse::<Capability>().map_err(serde::de::Error::custom)
     }
@@ -219,14 +224,19 @@ impl Capabilities {
 impl Serialize for Capabilities {
     /// Serialize as a name-sorted array, matching [`Capabilities::iter`], so
     /// byte-for-byte output is deterministic across runs and platforms.
-    fn serialize<S: serde::Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
         let names: Vec<&str> = self.iter().map(|c| c.as_str()).collect();
         names.serialize(serializer)
     }
 }
 
 impl<'de> Deserialize<'de> for Capabilities {
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> std::result::Result<Self, D::Error> {
+    fn deserialize<D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> std::result::Result<Self, D::Error> {
         let raw = <Vec<String>>::deserialize(deserializer)?;
         let mut set = Capabilities::new();
         for name in raw {
@@ -239,7 +249,11 @@ impl<'de> Deserialize<'de> for Capabilities {
 
 impl std::fmt::Display for Capabilities {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let joined = self.iter().map(|c| c.as_str()).collect::<Vec<_>>().join(",");
+        let joined = self
+            .iter()
+            .map(|c| c.as_str())
+            .collect::<Vec<_>>()
+            .join(",");
         f.write_str(&joined)
     }
 }
@@ -269,10 +283,19 @@ mod tests {
             Capability::DeterministicClock,
         ] {
             assert_eq!(cap.to_string().parse::<Capability>().unwrap(), cap);
-            assert_eq!(serde_json::to_string(&cap).unwrap(), format!("\"{}\"", cap.as_str()));
+            assert_eq!(
+                serde_json::to_string(&cap).unwrap(),
+                format!("\"{}\"", cap.as_str())
+            );
         }
-        assert_eq!("simulator".parse::<Capability>().unwrap(), Capability::Simulation);
-        assert_eq!("prover".parse::<Capability>().unwrap(), Capability::ProofProvider);
+        assert_eq!(
+            "simulator".parse::<Capability>().unwrap(),
+            Capability::Simulation
+        );
+        assert_eq!(
+            "prover".parse::<Capability>().unwrap(),
+            Capability::ProofProvider
+        );
         assert!("fast-ai".parse::<Capability>().is_err());
     }
 
@@ -305,11 +328,17 @@ mod tests {
 
     #[test]
     fn iteration_is_deterministic_and_sorted_by_name() {
-        let set = Capabilities::of([Capability::Testnet, Capability::Simulation, Capability::ProofProvider]);
+        let set = Capabilities::of([
+            Capability::Testnet,
+            Capability::Simulation,
+            Capability::ProofProvider,
+        ]);
         let names: Vec<_> = set.iter().map(|c| c.as_str()).collect();
         assert_eq!(names, vec!["proof-provider", "simulation", "testnet"]);
-        assert_eq!(serde_json::to_string(&set).unwrap(),
-            r#"["proof-provider","simulation","testnet"]"#);
+        assert_eq!(
+            serde_json::to_string(&set).unwrap(),
+            r#"["proof-provider","simulation","testnet"]"#
+        );
     }
 
     #[test]
