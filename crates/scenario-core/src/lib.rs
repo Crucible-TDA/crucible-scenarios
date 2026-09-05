@@ -36,7 +36,9 @@
 pub mod errors;
 pub mod seed;
 pub mod severity;
+pub mod tags;
 
 pub use errors::{Error, Result};
 pub use seed::{DeterministicRng, Seed};
 pub use severity::Severity;
+pub use tags::Tags;
