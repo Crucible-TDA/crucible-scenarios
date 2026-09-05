@@ -34,6 +34,8 @@
 //! compiles.
 
 pub mod actors;
+pub mod capabilities;
+pub mod environment;
 pub mod errors;
 pub mod metadata;
 pub mod scenario_id;
@@ -42,6 +44,8 @@ pub mod severity;
 pub mod tags;
 
 pub use actors::{Actor, ActorId, ActorSet, Role};
+pub use capabilities::{Capabilities, Capability};
+pub use environment::{Environment, EnvironmentKind};
 pub use errors::{Error, Result};
 pub use metadata::{Category, ScenarioMetadata};
 pub use scenario_id::ScenarioId;
