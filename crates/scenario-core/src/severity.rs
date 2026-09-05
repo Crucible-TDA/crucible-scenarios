@@ -9,10 +9,11 @@
 use serde::{Deserialize, Serialize};
 
 /// How seriously a finding should be taken.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Severity {
     /// Informational — no defect, or expected behavior observed.
+    #[default]
     Info,
     /// Low — cosmetic or non-protocol issue.
     Low,
@@ -59,12 +60,6 @@ impl Severity {
             Severity::High => "high",
             Severity::Critical => "critical",
         }
-    }
-}
-
-impl Default for Severity {
-    fn default() -> Self {
-        Severity::Info
     }
 }
 

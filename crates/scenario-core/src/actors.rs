@@ -94,7 +94,7 @@ impl<'de> Deserialize<'de> for ActorId {
 /// A role is a *declared* posture: scenarios pair roles with capabilities and
 /// operations, then assert that the system under test honors or rejects them
 /// accordingly. The model never assumes a role grants anything on its own.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum Role {
     /// Token issuer — protocol-defined administrative authority.
@@ -106,6 +106,7 @@ pub enum Role {
     /// Read/verify authority (audit trail, public data).
     Auditor,
     /// Ordinary end user.
+    #[default]
     User,
     /// A user with no granted authority — used by negative scenarios.
     Unauthorized,
@@ -122,12 +123,6 @@ impl Role {
             Role::User => "user",
             Role::Unauthorized => "unauthorized",
         }
-    }
-}
-
-impl Default for Role {
-    fn default() -> Self {
-        Role::User
     }
 }
 

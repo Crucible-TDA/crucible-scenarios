@@ -23,10 +23,11 @@
 use serde::Serialize;
 
 /// Visibility classification of an observation.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum Visibility {
     /// Protocol-defined public information — safe in logs and reports.
+    #[default]
     Public,
     /// Protocol-confidential value (balance, amount, commitment secret).
     Private,
@@ -50,12 +51,6 @@ impl Visibility {
     /// Whether values with this classification may enter persistent reports.
     pub const fn is_public(self) -> bool {
         matches!(self, Visibility::Public)
-    }
-}
-
-impl Default for Visibility {
-    fn default() -> Self {
-        Visibility::Public
     }
 }
 

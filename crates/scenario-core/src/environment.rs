@@ -17,13 +17,14 @@
 use serde::{Deserialize, Serialize};
 
 /// The kind of system a scenario drives.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum EnvironmentKind {
     /// Test doubles only — used by unit tests of this repository's own
     /// infrastructure, never as evidence about the system under test.
     Mock,
     /// `crucible-simulator` deterministic state execution.
+    #[default]
     Simulator,
     /// `crucible-prover` proof generation/verification.
     Prover,
@@ -52,12 +53,6 @@ impl EnvironmentKind {
     /// ordinary CI without explicit opt-in.
     pub const fn is_isolated(self) -> bool {
         matches!(self, EnvironmentKind::Testnet)
-    }
-}
-
-impl Default for EnvironmentKind {
-    fn default() -> Self {
-        EnvironmentKind::Simulator
     }
 }
 

@@ -19,10 +19,11 @@ use crate::scenario_id::ScenarioId;
 use crate::seed::Seed;
 
 /// Terminal status of a scenario run.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Status {
     /// All expectations and assertions held; the run passed.
+    #[default]
     Pass,
     /// A declared expectation/assertion/invariant failed.
     Fail,
@@ -71,12 +72,6 @@ impl Status {
     /// Whether the scenario never actually executed.
     pub const fn is_inconclusive(self) -> bool {
         matches!(self, Status::Skipped)
-    }
-}
-
-impl Default for Status {
-    fn default() -> Self {
-        Status::Pass
     }
 }
 

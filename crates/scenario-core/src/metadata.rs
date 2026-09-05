@@ -15,10 +15,11 @@ use crate::tags::Tags;
 
 /// Coarse scenario classification used by the registry and CLI
 /// (`--category`), mirroring the scenario families under `scenarios/`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum Category {
     /// A scenario whose inputs are expected to succeed.
+    #[default]
     HappyPath,
     /// A scenario whose inputs must be rejected (expected rejection).
     Negative,
@@ -85,12 +86,6 @@ impl Category {
             Category::Invariant => "invariant",
             Category::Agent => "agent",
         }
-    }
-}
-
-impl Default for Category {
-    fn default() -> Self {
-        Category::HappyPath
     }
 }
 
