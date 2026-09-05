@@ -36,6 +36,7 @@
 pub mod actors;
 pub mod assertion;
 pub mod capabilities;
+pub mod context;
 pub mod environment;
 pub mod errors;
 pub mod expectation;
@@ -53,6 +54,11 @@ pub mod tags;
 pub use actors::{Actor, ActorId, ActorSet, Role};
 pub use assertion::{AssertionKind, AssertionResult, AssertionSpec};
 pub use capabilities::{Capabilities, Capability};
+pub use context::{
+    Clock, EventLog, ExecutionReport, FixtureProvider, FixedClock, ProofProviderService,
+    ProofReport, ProofRequest, ScenarioContext, SimulatorService, SorobanService, SystemClock,
+    VerificationReport, VerificationRequest, VerifierService,
+};
 pub use environment::{Environment, EnvironmentKind};
 pub use errors::{Error, Result};
 pub use expectation::{Expectation, ExpectationKind};
